@@ -1,180 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Valentine Yes/No</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #ffffff;
-      --text: #222;
-      --heart: #e25587;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<title>Version 1.0 – Access Granted</title>
+<style>
+body {
+  margin:0;
+  background: linear-gradient(135deg,#ff758c,#ff7eb3);
+  font-family: 'Courier New', monospace;
+  color:white;
+  text-align:center;
+  overflow-x:hidden;
+}
 
-    /* Fancy floating hearts background */
-    .scene {
-      position: relative;
-      height: 100%;
-      width: 100%;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      background: #fff;
-    }
-    .hearts {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    /* create many tiny heart particles using multiple layers of gradients */
-    .hearts::before, .hearts::after {
-      content: "";
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      background-image:
-        radial-gradient(circle at 50% 50%, #ff6b93 2px, transparent 2.5px);
-      background-size: 20px 20px;
-      opacity: 0.25;
-      animation: drift 25s linear infinite;
-    }
-    .hearts::after {
-      left: -40%;
-      top: -40%;
-      animation-duration: 35s;
-      opacity: 0.15;
-    }
-    @keyframes drift {
-      0% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(-18px) translateX(12px); }
-      100% { transform: translateY(0) translateX(0); }
-    }
+.container {
+  padding:50px 20px;
+  animation:fadeIn 2s ease-in-out;
+}
 
-    .card {
-      text-align: center;
-      padding: 2rem;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.96);
-      box-shadow: 0 8px 24px rgba(0,0,0,.08);
-      min-width: 320px;
-      max-width: 520px;
-    }
+h1 {
+  letter-spacing:2px;
+}
 
-    h1 {
-      margin: 0 0 1.25rem;
-      font-size: 2rem;
-    }
+p {
+  font-family: Georgia, serif;
+  font-size:20px;
+  max-width:700px;
+  margin:auto;
+  line-height:1.6;
+}
 
-    .buttons {
-      display: inline-flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+img {
+  width:250px;
+  border-radius:20px;
+  margin:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
 
-    button {
-      padding: 0.75rem 1.25rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 999px;
-      cursor: default;
-      background: #f0f0f0;
-      color: #333;
-      box-shadow: 0 6px 14px rgba(0,0,0,.08);
-      transition: transform 0.15s ease;
-    }
+button {
+  margin-top:30px;
+  padding:12px 25px;
+  background:white;
+  color:#ff4d6d;
+  border:none;
+  border-radius:25px;
+  cursor:pointer;
+  font-size:16px;
+}
 
-    #yesBtn {
-      background: #ff4d6d;
-      color: white;
-      cursor: pointer;
-    }
+.hidden { display:none; }
 
-    #noBtn {
-      background: #f0f0f0;
-      color: #333;
-      position: relative;
-    }
-
-    /* Evading behavior: No button moves away in all directions if cursor gets near. 
-       Implemented with translate to a nearby offset; we also allow moving Left/Right/Up/Down. */
-    .moved { transform: translate(28px, -6px); }
-
-    @media (max-width: 520px) {
-      h1 { font-size: 1.8rem; }
-    }
-  </style>
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1; transform:translateY(0);}
+}
+</style>
 </head>
 <body>
-  <div class="scene" aria-label="Valentine prompt scene">
-    <div class="hearts" aria-hidden="true"></div>
 
-    <div class="card" role="region" aria-label="Question card">
-      <h1>Will you be my popam-tine now & forever on Valentines?</h1>
+<div class="container">
+  <h1>Version 1.0 – Access Granted</h1>
 
-      <div class="buttons" id="buttonRow">
-        <button id="yesBtn" aria-label="Yes, I will be your Valentine" onclick="goYes()">Yes</button>
-        <button id="noBtn" aria-label="No, I will not be your Valentine">No</button>
-      </div>
-    </div>
+  <p>
+  User authenticated.<br>
+  Background process detected since the day we met.
+  </p>
+
+  <div>
+    <img src="Fancy.jpg">
+    <img src="Romantic.jpg">
   </div>
 
-  <script>
-    // No button evasion: on proximity, move in a random nearby direction (left/right/up/down)
-    (function(){
-      const noBtn = document.getElementById('noBtn');
-      let evading = false;
+  <button onclick="reveal()">Decrypt Message</button>
 
-      function evade() {
-        // pick a random direction step
-        const dirs = [
-          {x: 28, y: 0},
-          {x: -28, y: 0},
-          {x: 0, y: 26},
-          {x: 0, y: -26},
-          {x: 18, y: 18},
-          {x: -18, y: -18},
-        ];
-        const d = dirs[Math.floor(Math.random() * dirs.length)];
-        noBtn.style.transform = `translate(${d.x}px, ${d.y}px)`;
-        evading = true;
-      }
+  <div id="secret" class="hidden">
+    <p>
+    I love you for being you. <br>
+    Your happy smiling face makes my day.<br><br>
+    And I promise to choose that version of you always.<br><br>
+    Happy Valentine’s Day ❤️
+    </p>
+  </div>
+</div>
 
-      function reset() {
-        if (!evading) return;
-        noBtn.style.transform = 'translate(0,0)';
-        evading = false;
-      }
+<script>
+function reveal(){
+  document.getElementById("secret").classList.remove("hidden");
+}
+</script>
 
-      document.addEventListener('mousemove', function(e){
-        const rect = noBtn.getBoundingClientRect();
-        const cx = rect.left + rect.width/2;
-        const cy = rect.top + rect.height/2;
-        const dx = e.clientX - cx;
-        const dy = e.clientY - cy;
-        const dist = Math.hypot(dx, dy);
-        const threshold = Math.max(60, Math.min(120, rect.width * 0.9));
-        if (dist < threshold) {
-          evade();
-        } else {
-          reset();
-        }
-      });
-    })();
-
-    // Yes button navigation
-    function goYes() {
-      window.location.href = 'yes.html';
-    }
-  </script>
 </body>
 </html>
